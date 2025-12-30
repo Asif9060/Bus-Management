@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BD Bus - Book Your Bus Tickets Online | Bangladesh</title>
+    <meta name="description"
+        content="Book bus tickets online across Bangladesh. Green Line, Hanif, Shyamoli, Ena and more. Easy booking with seat selection." />
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🚌</span>
+                <span class="logo-text">BD Bus</span>
+            </div>
+            <nav class="nav">
+                <a href="#" class="nav-link active" onclick="showPage('booking')">Book Tickets</a>
+                <a href="#" class="nav-link" onclick="showPage('my-bookings')">My Bookings</a>
+                <a href="#" class="nav-link" onclick="showPage('routes')">Routes</a>
+                <a href="#" class="nav-link" onclick="showPage('help')">Help</a>
+            </nav>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="openModal('login-modal')">Login</button>
+                <button class="btn-primary" onclick="openModal('signup-modal')">Sign Up</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <!-- Booking Panel -->
+        <div class="booking-panel">
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Route</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Bus</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Seats</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Confirm</span>
+                </div>
+            </div>
+
+            <!-- Step 1: Route Selection -->
+            <div class="booking-step" id="step-1">
+                <h2 class="section-title">🗺️ Select Your Route</h2>
+
+                <div class="route-form">
+                    <div class="input-group">
+                        <label for="from-city">From</label>
+                        <input type="text" id="from-city" list="cities-list"
+                            placeholder="Type or select city (e.g., Dhaka, ঢাকা)" autocomplete="off" />
+                    </div>
+
+                    <button type="button" class="swap-btn" onclick="swapCities()" title="Swap cities">
+                        ⇄
+                    </button>
+
+                    <div class="input-group">
+                        <label for="to-city">To</label>
+                        <input type="text" id="to-city" list="cities-list" placeholder="Type or select destination"
+                            autocomplete="off" />
+                    </div>
+
+                    <div class="input-group">
+                        <label for="travel-date">Date</label>
+                        <input type="date" id="travel-date" />
+                    </div>
+                </div>
+
+                <!-- Datalist for city suggestions -->
+                <datalist id="cities-list">
+                    <option value="Dhaka">Dhaka (ঢাকা)</option>
+                    <option value="Chittagong">Chittagong (চট্টগ্রাম)</option>
+                    <option value="Khulna">Khulna (খুলনা)</option>
+                    <option value="Rajshahi">Rajshahi (রাজশাহী)</option>
+                    <option value="Sylhet">Sylhet (সিলেট)</option>
+                    <option value="Rangpur">Rangpur (রংপুর)</option>
+                    <option value="Barisal">Barisal (বরিশাল)</option>
+                    <option value="Mymensingh">Mymensingh (ময়মনসিংহ)</option>
+                    <option value="Cox's Bazar">Cox's Bazar (কক্সবাজার)</option>
+                    <option value="Comilla">Comilla (কুমিল্লা)</option>
+                    <option value="Gazipur">Gazipur (গাজীপুর)</option>
+                    <option value="Narayanganj">Narayanganj (নারায়ণগঞ্জ)</option>
+                    <option value="Bogra">Bogra (বগুড়া)</option>
+                    <option value="Jessore">Jessore (যশোর)</option>
+                    <option value="Dinajpur">Dinajpur (দিনাজপুর)</option>
+                    <option value="Tangail">Tangail (টাঙ্গাইল)</option>
+                    <option value="Savar">Savar (সাভার)</option>
+                    <option value="Tongi">Tongi (টঙ্গী)</option>
+                    <option value="Brahmanbaria">Brahmanbaria (ব্রাহ্মণবাড়িয়া)</option>
+                    <option value="Feni">Feni (ফেনী)</option>
+                    <option value="Noakhali">Noakhali (নোয়াখালী)</option>
+                    <option value="Bandarban">Bandarban (বান্দরবান)</option>
+                    <option value="Rangamati">Rangamati (রাঙামাটি)</option>
+                    <option value="Khagrachari">Khagrachari (খাগড়াছড়ি)</option>
+                    <option value="Sreemangal">Sreemangal (শ্রীমঙ্গল)</option>
+                    <option value="Saint Martin">Saint Martin (সেন্ট মার্টিন)</option>
+                    <option value="Kuakata">Kuakata (কুয়াকাটা)</option>
+                    <option value="Sundarbans">Sundarbans (সুন্দরবন)</option>
+                    <option value="Sajek">Sajek Valley (সাজেক)</option>
+                    <option value="Teknaf">Teknaf (টেকনাফ)</option>
+                </datalist>
+
+                <button class="btn-primary btn-large" onclick="searchBuses()">
+                    🔍 Search Buses
+                </button>
+            </div>
+
+            <!-- Step 2: Bus Selection -->
+            <div class="booking-step hidden" id="step-2">
+                <div class="step-header">
+                    <button class="back-btn" onclick="goToStep(1)">← Back</button>
+                    <h2 class="section-title">🚌 Available Buses</h2>
+                </div>
+
+                <div class="route-summary" id="route-summary">
+                    <!-- Filled dynamically -->
+                </div>
+
+                <div class="bus-list" id="bus-list">
+                    <!-- Filled dynamically -->
+                </div>
+            </div>
+
+            <!-- Step 3: Seat Selection -->
+            <div class="booking-step hidden" id="step-3">
+                <div class="step-header">
+                    <button class="back-btn" onclick="goToStep(2)">← Back</button>
+                    <h2 class="section-title">💺 Select Your Seats</h2>
+                </div>
+
+                <div class="selected-bus-info" id="selected-bus-info">
+                    <!-- Filled dynamically -->
+                </div>
+
+                <div class="seat-legend">
+                    <div class="legend-item">
+                        <div class="seat-sample available"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-sample selected"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-sample pending"></div>
+                        <span>Pending</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat-sample booked"></div>
+                        <span>Booked</span>
+                    </div>
+                </div>
+
+                <div class="bus-layout">
+                    <div class="bus-front">
+                        <span class="driver-seat">🚗 Driver</span>
+                        <span class="door">🚪</span>
+                    </div>
+                    <div class="seat-grid" id="seat-grid">
+                        <!-- Seats generated dynamically -->
+                    </div>
+                </div>
+
+                <div class="seat-selection-summary" id="seat-selection-summary">
+                    <div class="selected-seats-info">
+                        <span>Selected Seats: </span>
+                        <span id="selected-seats-list">None</span>
+                    </div>
+                    <div class="total-fare">
+                        <span>Total Fare: </span>
+                        <span id="total-fare">৳0</span>
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-large" onclick="proceedToPassengerInfo()" id="proceed-btn" disabled>
+                    Continue to Passenger Details
+                </button>
+            </div>
+
+            <!-- Step 4: Passenger Info & Confirmation -->
+            <div class="booking-step hidden" id="step-4">
+                <div class="step-header">
+                    <button class="back-btn" onclick="goToStep(3)">← Back</button>
+                    <h2 class="section-title">📝 Passenger Details</h2>
+                </div>
+
+                <form class="passenger-form" id="passenger-form">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="passenger-name">Full Name *</label>
+                            <input type="text" id="passenger-name" placeholder="Enter your full name" required />
+                        </div>
+                        <div class="input-group">
+                            <label for="passenger-phone">Phone Number *</label>
+                            <input type="tel" id="passenger-phone" placeholder="01XXXXXXXXX" required />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label for="passenger-email">Email</label>
+                            <input type="email" id="passenger-email" placeholder="your@email.com" />
+                        </div>
+                        <div class="input-group">
+                            <label for="passenger-nid">NID / Passport (Optional)</label>
+                            <input type="text" id="passenger-nid" placeholder="ID Number" />
+                        </div>
+                    </div>
+                </form>
+
+                <div class="booking-summary" id="booking-summary">
+                    <!-- Filled dynamically -->
+                </div>
+
+                <button class="btn-primary btn-large btn-confirm" onclick="confirmBooking()">
+                    ✓ Confirm Booking
+                </button>
+            </div>
+
+            <!-- Booking Confirmation Modal -->
+            <div class="modal hidden" id="confirmation-modal">
+                <div class="modal-content">
+                    <div class="ticket" id="ticket">
+                        <!-- Ticket content generated dynamically -->
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn-secondary" onclick="printTicket()">🖨️ Print Ticket</button>
+                        <button class="btn-primary" onclick="newBooking()">Book Another</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Panel -->
+        <div class="map-panel">
+            <div id="map"></div>
+            <div class="journey-info hidden" id="journey-info">
+                <div class="journey-header">
+                    <span class="journey-icon">🚌</span>
+                    <span class="journey-title" id="journey-title">Journey Details</span>
+                </div>
+                <div class="journey-details">
+                    <div class="journey-stat">
+                        <span class="stat-label">Distance</span>
+                        <span class="stat-value" id="journey-distance">--</span>
+                    </div>
+                    <div class="journey-stat">
+                        <span class="stat-label">Duration</span>
+                        <span class="stat-value" id="journey-duration">--</span>
+                    </div>
+                    <div class="journey-stat">
+                        <span class="stat-label">Departure</span>
+                        <span class="stat-value" id="journey-departure">--</span>
+                    </div>
+                    <div class="journey-stat">
+                        <span class="stat-label">Est. Arrival</span>
+                        <span class="stat-value" id="journey-arrival">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal hidden" id="login-modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>🔐 Login</h2>
+                <button class="close-btn" onclick="closeModal('login-modal')">&times;</button>
+            </div>
+            <form class="auth-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <label for="login-phone">Phone Number</label>
+                    <input type="tel" id="login-phone" placeholder="01XXXXXXXXX" required />
+                </div>
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter password" required />
+                </div>
+                <button type="submit" class="btn-primary btn-large">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#"
+                        onclick="switchModal('login-modal', 'signup-modal')">Sign Up</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal hidden" id="signup-modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2>📝 Create Account</h2>
+                <button class="close-btn" onclick="closeModal('signup-modal')">&times;</button>
+            </div>
+            <form class="auth-form" onsubmit="handleSignup(event)">
+                <div class="input-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your name" required />
+                </div>
+                <div class="input-group">
+                    <label for="signup-phone">Phone Number</label>
+                    <input type="tel" id="signup-phone" placeholder="01XXXXXXXXX" required />
+                </div>
+                <div class="input-group">
+                    <label for="signup-email">Email (Optional)</label>
+                    <input type="email" id="signup-email" placeholder="your@email.com" />
+                </div>
+                <div class="input-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" placeholder="Create password" required />
+                </div>
+                <button type="submit" class="btn-primary btn-large">Create Account</button>
+                <p class="auth-switch">Already have an account? <a href="#"
+                        onclick="switchModal('signup-modal', 'login-modal')">Login</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Bookings Modal -->
+    <div class="modal hidden" id="my-bookings-modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>🎫 My Bookings</h2>
+                <button class="close-btn" onclick="closeModal('my-bookings-modal')">&times;</button>
+            </div>
+            <div class="bookings-list" id="bookings-list">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Routes Modal -->
+    <div class="modal hidden" id="routes-modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>🗺️ Available Routes</h2>
+                <button class="close-btn" onclick="closeModal('routes-modal')">&times;</button>
+            </div>
+            <div class="routes-grid" id="routes-grid">
+                <!-- Filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal hidden" id="help-modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>❓ Help & Support</h2>
+                <button class="close-btn" onclick="closeModal('help-modal')">&times;</button>
+            </div>
+            <div class="help-content">
+                <div class="help-section">
+                    <h3>📞 Contact Us</h3>
+                    <p><strong>Hotline:</strong> 16XXX (24/7)</p>
+                    <p><strong>Email:</strong> support@bdbus.com</p>
+                    <p><strong>WhatsApp:</strong> +880 1XXX-XXXXXX</p>
+                </div>
+                <div class="help-section">
+                    <h3>❓ FAQs</h3>
+                    <div class="faq-item">
+                        <h4>How do I book a ticket?</h4>
+                        <p>Select your route, choose a bus, pick your seats, enter passenger details, and confirm your
+                            booking.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>Can I cancel my booking?</h4>
+                        <p>Yes, you can cancel up to 2 hours before departure. Refund will be processed within 3-5
+                            business days.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>How do I get my ticket?</h4>
+                        <p>After booking, you'll receive an e-ticket via SMS and email. Show the ticket at the counter
+                            or on your phone.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h4>What payment methods are accepted?</h4>
+                        <p>We accept bKash, Nagad, Rocket, credit/debit cards, and cash at partner counters.</p>
+                    </div>
+                </div>
+                <div class="help-section">
+                    <h3>🏢 Office Address</h3>
+                    <p>BD Bus Headquarters<br>123 Motijheel C/A, Dhaka 1000<br>Bangladesh</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
